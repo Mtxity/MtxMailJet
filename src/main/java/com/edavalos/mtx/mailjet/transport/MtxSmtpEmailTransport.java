@@ -43,6 +43,7 @@ public class MtxSmtpEmailTransport implements MtxEmailTransport {
         properties.put("mail.smtp.connectiontimeout", "10000");
         properties.put("mail.smtp.timeout", "10000");
         properties.put("mail.smtp.writetimeout", "10000");
+        properties.put("mail.smtp.ssl.checkserveridentity", "true");
 
         Session session = Session.getInstance(
                 properties,
@@ -55,6 +56,11 @@ public class MtxSmtpEmailTransport implements MtxEmailTransport {
                         );
                     }
                 }
+        );
+
+        properties.put(
+                "mail.smtp.starttls.required",
+                String.valueOf(config.isStartTls())
         );
 
         try {
