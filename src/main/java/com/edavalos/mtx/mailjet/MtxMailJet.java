@@ -4,6 +4,7 @@ import com.edavalos.mtx.mailjet.config.MtxEmailConfig;
 import com.edavalos.mtx.mailjet.transport.MtxEmailTransport;
 import com.edavalos.mtx.mailjet.transport.MtxSmtpEmailTransport;
 
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,6 +16,11 @@ public class MtxMailJet implements AutoCloseable {
     public MtxMailJet(MtxEmailConfig config) {
         this.transport = new MtxSmtpEmailTransport(config);
         this.executor = Executors.newFixedThreadPool(5);
+    }
+
+    static void main(String[] args) {
+        System.out.println("Hello world!");
+        System.out.printf("args: %s\n", Arrays.toString(args));
     }
 
     public CompletableFuture<Void> send(MtxEmail email) {
