@@ -51,8 +51,6 @@ public class MtxEmail {
     }
 
     /**
-     * Returns the sender email address.
-     *
      * @return the sender email address
      */
     public String getSender() {
@@ -60,8 +58,6 @@ public class MtxEmail {
     }
 
     /**
-     * Returns the primary recipient email address.
-     *
      * @return the first recipient email address
      */
     public String getRecipient() {
@@ -69,8 +65,6 @@ public class MtxEmail {
     }
 
     /**
-     * Returns all recipient email addresses.
-     *
      * @return an unmodifiable list of recipient email addresses
      */
     public List<String> getRecipients() {
@@ -78,8 +72,6 @@ public class MtxEmail {
     }
 
     /**
-     * Returns the CC recipient email addresses.
-     *
      * @return an unmodifiable list of CC recipient email addresses
      */
     public List<String> getCc() {
@@ -87,8 +79,6 @@ public class MtxEmail {
     }
 
     /**
-     * Returns the BCC recipient email addresses.
-     *
      * @return an unmodifiable list of BCC recipient email addresses
      */
     public List<String> getBcc() {
@@ -96,8 +86,6 @@ public class MtxEmail {
     }
 
     /**
-     * Returns the email subject.
-     *
      * @return the email subject
      */
     public String getSubject() {
@@ -105,8 +93,6 @@ public class MtxEmail {
     }
 
     /**
-     * Returns the email body content.
-     *
      * @return the email body content
      */
     public String getBody() {
@@ -114,8 +100,6 @@ public class MtxEmail {
     }
 
     /**
-     * Returns whether the email body is HTML format.
-     *
      * @return {@code true} if the body is HTML, {@code false} if plain text
      */
     public boolean isHtml() {
@@ -123,9 +107,7 @@ public class MtxEmail {
     }
 
     /**
-     * Creates a new builder for constructing an {@code MtxEmail}.
-     *
-     * @return a new {@code Builder}
+     * @return a new {@code Builder} for constructing an {@code MtxEmail}
      */
     public static Builder builder() {
         return new Builder();
