@@ -18,6 +18,7 @@ java {
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:6.1.3")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation("org.eclipse.angus:jakarta.mail:2.0.5")
 }
 
 tasks.withType<JavaCompile>().configureEach {
