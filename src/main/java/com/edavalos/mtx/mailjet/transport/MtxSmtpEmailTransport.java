@@ -15,9 +15,11 @@ import java.util.Properties;
 
 public class MtxSmtpEmailTransport implements MtxEmailTransport {
     private final MtxEmailConfig config;
+    private final Session session;
 
     public MtxSmtpEmailTransport(MtxEmailConfig config) {
         this.config = config;
+        this.session = createSession();
     }
 
     @Override
@@ -79,5 +81,23 @@ public class MtxSmtpEmailTransport implements MtxEmailTransport {
                     exception
             );
         }
+    }
+
+    private Session createSession() {
+        Properties properties = new Properties();
+
+        // @TODO: Configure properties
+        return Session.getInstance(
+                properties,
+                new Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(
+                                config.getUsername(),
+                                config.getPassword()
+                        );
+                    }
+                }
+        );
     }
 }
