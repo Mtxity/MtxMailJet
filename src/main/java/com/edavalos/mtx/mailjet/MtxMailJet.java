@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class MtxMailJet implements AutoCloseable {
     private final MtxEmailTransport transport;
@@ -32,5 +33,14 @@ public class MtxMailJet implements AutoCloseable {
     @Override
     public void close() {
         executor.shutdown();
+
+        try {
+            if (!executor.awaitTermination(30, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException exception) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 }
