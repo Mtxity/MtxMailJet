@@ -131,6 +131,36 @@ public class MtxEmail {
         return new Builder();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MtxEmail mtxEmail)) return false;
+        return html == mtxEmail.html &&
+               Objects.equals(sender, mtxEmail.sender) &&
+               Objects.equals(recipients, mtxEmail.recipients) &&
+               Objects.equals(cc, mtxEmail.cc) &&
+               Objects.equals(bcc, mtxEmail.bcc) &&
+               Objects.equals(subject, mtxEmail.subject) &&
+               Objects.equals(body, mtxEmail.body);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sender, recipients, cc, bcc, subject, body, html);
+    }
+
+    @Override
+    public String toString() {
+        return "MtxEmail{" +
+                "sender='" + sender + '\'' +
+                ", recipients=" + recipients +
+                ", cc=" + cc +
+                ", bcc=" + bcc +
+                ", subject='" + subject + '\'' +
+                ", html=" + html +
+                '}';
+    }
+
     /**
      * Builder for constructing instances of {@link MtxEmail}.
      */
