@@ -58,10 +58,32 @@ public class MtxSmtpEmailTransport implements MtxEmailTransport {
 
             message.setSubject(email.getSubject(), "UTF-8");
 
-            if (email.isHtml()) {
-                message.setContent(email.getBody(), "text/html; charset=utf-8");
+            if (email.getAttachments().isEmpty()) {
+                if (email.isHtml()) {
+                    message.setContent(email.getBody(), "text/html; charset=utf-8");
+                } else {
+                    message.setText(email.getBody(), "UTF-8");
+                }
             } else {
-                message.setText(email.getBody(), "UTF-8");
+                jakarta.mail.internet.MimeMultipart multipart = new jakarta.mail.internet.MimeMultipart();
+
+                jakarta.mail.internet.MimeBodyPart bodyPart = new jakarta.mail.internet.MimeBodyPart();
+                if (email.isHtml()) {
+                    bodyPart.setContent(email.getBody(), "text/html; charset=utf-8");
+                } else {
+                    bodyPart.setText(email.getBody(), "UTF-8");
+                }
+                multipart.addBodyPart(bodyPart);
+
+                for (MtxEmail.Attachment att : email.getAttachments()) {
+                    jakarta.mail.internet.MimeBodyPart attachmentPart = new jakarta.mail.internet.MimeBodyPart();
+                    jakarta.mail.util.ByteArrayDataSource ds = new jakarta.mail.util.ByteArrayDataSource(att.getData(), att.getContentType());
+                    attachmentPart.setDataHandler(new jakarta.activation.DataHandler(ds));
+                    attachmentPart.setFileName(att.getFileName());
+                    multipart.addBodyPart(attachmentPart);
+                }
+
+                message.setContent(multipart);
             }
 
             Transport.send(message);
