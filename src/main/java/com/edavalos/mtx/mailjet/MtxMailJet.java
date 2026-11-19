@@ -16,7 +16,7 @@ public class MtxMailJet implements AutoCloseable {
 
     public MtxMailJet(MtxEmailConfig config) {
         this.transport = new MtxSmtpEmailTransport(config);
-        this.executor = Executors.newFixedThreadPool(5);
+        this.executor = Executors.newFixedThreadPool(config.getThreadPoolSize());
     }
 
     static void main(String[] args) {
