@@ -51,6 +51,76 @@ public final class MtxEmailConfig {
         return new Builder();
     }
 
+    public static MtxEmailConfig fromEnv() {
+        Builder builder = builder();
+        String host = System.getenv("SMTP_HOST");
+        if (host != null) builder.host(host);
+
+        String port = System.getenv("SMTP_PORT");
+        if (port != null && !port.isBlank()) {
+            builder.port(Integer.parseInt(port.trim()));
+        }
+
+        String username = System.getenv("SMTP_USER");
+        if (username == null) username = System.getenv("SMTP_USERNAME");
+        if (username != null) builder.username(username);
+
+        String password = System.getenv("SMTP_PASS");
+        if (password == null) password = System.getenv("SMTP_PASSWORD");
+        if (password != null) builder.password(password);
+
+        String ssl = System.getenv("SMTP_SSL");
+        if (ssl != null) builder.ssl(Boolean.parseBoolean(ssl));
+
+        String startTls = System.getenv("SMTP_STARTTLS");
+        if (startTls != null) builder.startTls(Boolean.parseBoolean(startTls));
+
+        String threadPoolSize = System.getenv("SMTP_THREAD_POOL_SIZE");
+        if (threadPoolSize != null && !threadPoolSize.isBlank()) {
+            builder.threadPoolSize(Integer.parseInt(threadPoolSize.trim()));
+        }
+
+        return builder.build();
+    }
+
+    public static MtxEmailConfig fromProperties(java.util.Properties props) {
+        Builder builder = builder();
+        String host = props.getProperty("smtp.host", props.getProperty("host"));
+        if (host != null) builder.host(host);
+
+        String port = props.getProperty("smtp.port", props.getProperty("port"));
+        if (port != null && !port.isBlank()) {
+            builder.port(Integer.parseInt(port.trim()));
+        }
+
+        String username = props.getProperty("smtp.username", props.getProperty("smtp.user", props.getProperty("username")));
+        if (username != null) builder.username(username);
+
+        String password = props.getProperty("smtp.password", props.getProperty("smtp.pass", props.getProperty("password")));
+        if (password != null) builder.password(password);
+
+        String ssl = props.getProperty("smtp.ssl", props.getProperty("ssl"));
+        if (ssl != null) builder.ssl(Boolean.parseBoolean(ssl));
+
+        String startTls = props.getProperty("smtp.starttls", props.getProperty("starttls"));
+        if (startTls != null) builder.startTls(Boolean.parseBoolean(startTls));
+
+        String threadPoolSize = props.getProperty("smtp.threadPoolSize", props.getProperty("threadPoolSize"));
+        if (threadPoolSize != null && !threadPoolSize.isBlank()) {
+            builder.threadPoolSize(Integer.parseInt(threadPoolSize.trim()));
+        }
+
+        return builder.build();
+    }
+
+    public static MtxEmailConfig fromFile(java.nio.file.Path path) throws java.io.IOException {
+        java.util.Properties props = new java.util.Properties();
+        try (java.io.Reader reader = java.nio.file.Files.newBufferedReader(path)) {
+            props.load(reader);
+        }
+        return fromProperties(props);
+    }
+
     public static class Builder {
         private String host;
         private int port = 587;
