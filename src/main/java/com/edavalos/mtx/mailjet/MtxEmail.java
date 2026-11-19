@@ -15,6 +15,7 @@ public class MtxEmail {
     private final String subject;
     private final String body;
     private final boolean html;
+    private final List<Attachment> attachments;
 
     /**
      * Constructs a new plain-text {@code MtxEmail}.
@@ -48,6 +49,7 @@ public class MtxEmail {
         this.subject = builder.subject != null ? builder.subject : "";
         this.body = builder.body != null ? builder.body : "";
         this.html = builder.html;
+        this.attachments = List.copyOf(builder.attachments);
     }
 
     /**
@@ -107,6 +109,13 @@ public class MtxEmail {
     }
 
     /**
+     * @return an unmodifiable list of attachments
+     */
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    /**
      * @return a new {@code Builder} for constructing an {@code MtxEmail}
      */
     public static Builder builder() {
@@ -154,6 +163,7 @@ public class MtxEmail {
         private String subject = "";
         private String body = "";
         private boolean html = false;
+        private final List<Attachment> attachments = new ArrayList<>();
 
         /**
          * Sets the sender address.
@@ -330,6 +340,55 @@ public class MtxEmail {
             return this;
         }
 
+        public Builder attachment(Attachment attachment) {
+            if (attachment != null) {
+                this.attachments.add(attachment);
+            }
+            return this;
+        }
+
+        public Builder attachment(String fileName, byte[] data) {
+            return attachment(new Attachment(fileName, data, null));
+        }
+
+        public Builder attachment(String fileName, byte[] data, String contentType) {
+            return attachment(new Attachment(fileName, data, contentType));
+        }
+
+        public Builder attachment(java.io.File file) {
+            if (file == null || !file.exists() || !file.isFile()) {
+                throw new IllegalArgumentException("Invalid file for attachment");
+            }
+            try {
+                byte[] data = java.nio.file.Files.readAllBytes(file.toPath());
+                String contentType = java.nio.file.Files.probeContentType(file.toPath());
+                return attachment(new Attachment(file.getName(), data, contentType));
+            } catch (java.io.IOException e) {
+                throw new RuntimeException("Failed to read attachment file: " + file.getName(), e);
+            }
+        }
+
+        public Builder attachment(java.nio.file.Path path) {
+            if (path == null || !java.nio.file.Files.exists(path) || !java.nio.file.Files.isRegularFile(path)) {
+                throw new IllegalArgumentException("Invalid file path for attachment");
+            }
+            try {
+                byte[] data = java.nio.file.Files.readAllBytes(path);
+                String contentType = java.nio.file.Files.probeContentType(path);
+                String fileName = path.getFileName() != null ? path.getFileName().toString() : "attachment";
+                return attachment(new Attachment(fileName, data, contentType));
+            } catch (java.io.IOException e) {
+                throw new RuntimeException("Failed to read attachment path: " + path, e);
+            }
+        }
+
+        public Builder attachments(List<Attachment> attachments) {
+            if (attachments != null) {
+                this.attachments.addAll(attachments);
+            }
+            return this;
+        }
+
         /**
          * Builds and returns a validated {@link MtxEmail}.
          *
@@ -380,6 +439,55 @@ public class MtxEmail {
             if (!trimmed.contains("@") || trimmed.startsWith("@") || trimmed.endsWith("@")) {
                 throw new IllegalArgumentException("Invalid email address for " + fieldName + ": " + email);
             }
+        }
+    }
+
+    /**
+     * Represents an email attachment.
+     */
+    public static class Attachment {
+        private final String fileName;
+        private final byte[] data;
+        private final String contentType;
+
+        public Attachment(String fileName, byte[] data, String contentType) {
+            if (fileName == null || fileName.isBlank()) {
+                throw new IllegalArgumentException("Attachment filename is required");
+            }
+            if (data == null) {
+                throw new IllegalArgumentException("Attachment data cannot be null");
+            }
+            this.fileName = fileName.trim();
+            this.data = data.clone();
+            this.contentType = contentType != null && !contentType.isBlank() ? contentType.trim() : "application/octet-stream";
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        public byte[] getData() {
+            return data.clone();
+        }
+
+        public String getContentType() {
+            return contentType;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Attachment that)) return false;
+            return java.util.Arrays.equals(data, that.data) &&
+                   Objects.equals(fileName, that.fileName) &&
+                   Objects.equals(contentType, that.contentType);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = Objects.hash(fileName, contentType);
+            result = 31 * result + java.util.Arrays.hashCode(data);
+            return result;
         }
     }
 }
