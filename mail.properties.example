@@ -1,0 +1,14 @@
+# SMTP Configuration Template for MtxMailJet
+# Rename this file to mail.properties or set environment variables accordingly.
+
+smtp.host=in-v3.mailjet.com
+smtp.port=587
+smtp.username=your_mailjet_api_key
+smtp.password=your_mailjet_secret_key
+smtp.ssl=false
+smtp.starttls=true
+smtp.threadPoolSize=5
+
+# Test recipient and sender for live email testing
+mail.from=sender@yourdomain.com
+mail.to=your-inbox@example.com
