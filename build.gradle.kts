@@ -18,6 +18,7 @@ java {
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:6.1.3")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("com.icegreen:greenmail-junit5:2.1.1")
     implementation("org.eclipse.angus:jakarta.mail:2.0.5")
 }
 
