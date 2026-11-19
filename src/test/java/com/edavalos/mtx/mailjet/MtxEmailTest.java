@@ -89,4 +89,21 @@ class MtxEmailTest {
                     .build();
         });
     }
+
+    @Test
+    void testEmailWithAttachments() {
+        byte[] data = "Hello PDF".getBytes();
+        MtxEmail email = MtxEmail.builder()
+                .from("sender@example.com")
+                .to("recipient@example.com")
+                .subject("Attachment Test")
+                .body("Please find attached.")
+                .attachment("invoice.pdf", data, "application/pdf")
+                .build();
+
+        assertEquals(1, email.getAttachments().size());
+        assertEquals("invoice.pdf", email.getAttachments().get(0).getFileName());
+        assertEquals("application/pdf", email.getAttachments().get(0).getContentType());
+        assertArrayEquals(data, email.getAttachments().get(0).getData());
+    }
 }
